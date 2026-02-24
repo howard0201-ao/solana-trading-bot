@@ -55,12 +55,46 @@ export class RiskManager {
   }
 
   /**
-   * ポジションがストップロス/テイクプロフィットに達したか確認
+   * トレーリングSLを更新し、エグジット判定を返す
+   *
+   * ロジック:
+   *   - 最高値を更新 → SL = highestPrice * (1 - stopLossPct) に引き上げ
+   *   - 最高値が更新されなくても、SLは下がらない（ラチェット式）
+   *   - 例: エントリー$1.00 → 最高値$1.20 → SL=$1.02（利益確保）
+   *        その後$1.10に下落してもSLは$1.02のまま
    */
   checkExit(position: Position, currentPrice: number): 'stop_loss' | 'take_profit' | 'hold' {
-    if (currentPrice <= position.stopLoss) return 'stop_loss';
+    // テイクプロフィットは固定
     if (currentPrice >= position.takeProfit) return 'take_profit';
+
+    // トレーリングSL判定
+    if (currentPrice <= position.stopLoss) return 'stop_loss';
+
     return 'hold';
+  }
+
+  /**
+   * トレーリングSLを更新（モニタリングループから毎回呼ぶ）
+   * 最高値が更新された場合のみSLを引き上げる
+   * @returns SLが更新された場合 true
+   */
+  updateTrailingStop(position: Position, currentPrice: number): boolean {
+    if (currentPrice <= position.highestPrice) return false;
+
+    // 最高値を更新
+    position.highestPrice = currentPrice;
+
+    // 新しいSL = 最高値 × (1 - stopLossPct)
+    // ただしエントリー時の初期SLより下がることはない
+    const trailingSL = currentPrice * (1 - this.config.stopLossPct);
+    const initialSL  = position.entryPrice * (1 - this.config.stopLossPct);
+    const newSL = Math.max(trailingSL, initialSL);
+
+    if (newSL > position.stopLoss) {
+      position.stopLoss = newSL;
+      return true;
+    }
+    return false;
   }
 
   /**

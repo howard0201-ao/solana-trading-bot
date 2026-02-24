@@ -34,8 +34,9 @@ export interface Position {
   entryAmount: number;  // SOL amount invested
   tokenAmount: number;  // token quantity
   entryTime: Date;
-  stopLoss: number;     // price
+  stopLoss: number;     // 現在のSL（トレーリングで動的に更新される）
   takeProfit: number;   // price
+  highestPrice: number; // エントリー後の最高値（トレーリングSL計算用）
   status: 'open' | 'closed';
   exitPrice?: number;
   exitTime?: Date;
