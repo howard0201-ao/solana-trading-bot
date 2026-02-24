@@ -1,0 +1,26 @@
+# 機密情報 — 絶対にコミットしない
+.env
+.env.*
+!.env.example
+
+# 状態ファイル（ローカル専用）
+state.json
+
+# ログ
+logs/
+
+# ビルド成果物
+dist/
+*.js.map
+
+# Node.js
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.vscode/
+.idea/
+*.swp

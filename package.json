@@ -1,0 +1,32 @@
+{
+  "name": "solana-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "dev": "ts-node --watch src/index.ts",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop solana-bot",
+    "pm2:restart": "pm2 restart solana-bot",
+    "pm2:logs": "pm2 logs solana-bot",
+    "pm2:status": "pm2 status"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
+    "@types/node": "^25.3.0",
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.13.5",
+    "bs58": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "pm2": "^6.0.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "uuid": "^13.0.0"
+  }
+}
